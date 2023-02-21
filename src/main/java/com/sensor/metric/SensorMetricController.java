@@ -1,4 +1,6 @@
 package com.sensor.metric;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,9 +22,10 @@ public class SensorMetricController {
   @PostMapping("/sensor/{sensorId}/metric")
   public List<SensorMetric> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
 
+    LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
     List<SensorMetric> sensorMetrics = metrics.stream()
       .map(metric ->  {
-        return new SensorMetric(sensorId, metric);
+        return new SensorMetric(sensorId, metric, currentDate);
       })
       .collect(Collectors.toList());
 

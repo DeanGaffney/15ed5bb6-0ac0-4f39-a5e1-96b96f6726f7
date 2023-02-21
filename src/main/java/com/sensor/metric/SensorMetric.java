@@ -1,5 +1,7 @@
 package com.sensor.metric;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -25,9 +27,12 @@ public class SensorMetric {
   })
   private Metric metric;
 
-  public SensorMetric(Long sensorId, Metric metric) {
+  private LocalDateTime createdDate;
+
+  public SensorMetric(Long sensorId, Metric metric, LocalDateTime createdDate) {
     this.sensorId = sensorId;
     this.metric = metric;
+    this.createdDate = createdDate;
   }
 
   public Long getId() {
@@ -40,5 +45,9 @@ public class SensorMetric {
 
   public Metric getMetric() {
     return this.metric;
+  }
+
+  public LocalDateTime getCreatedDate(){
+    return this.createdDate;
   }
 }
