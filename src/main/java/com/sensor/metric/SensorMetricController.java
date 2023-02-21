@@ -23,6 +23,7 @@ public class SensorMetricController {
   public List<SensorMetric> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
 
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+
     List<SensorMetric> sensorMetrics = metrics.stream()
       .map(metric ->  {
         return new SensorMetric(sensorId, metric, currentDate);
@@ -30,6 +31,13 @@ public class SensorMetricController {
       .collect(Collectors.toList());
 
       return this.repository.saveAll(sensorMetrics);
+  }
+
+  @PostMapping("/sensor/metric/query")
+  public List<SensorMetric> getSensorMetrics(@RequestBody SensorMetricQuery query) {
+    // TODO perform validation here
+    // TODO pass the query off to a service class
+
   }
 
 }
