@@ -37,7 +37,6 @@ tasks.register('integrationTest', Test) {
     classpath = sourceSets.intTest.runtimeClasspath
 
     shouldRunAfter test
-    mustRunAfter tasks.test
 
     useJUnitPlatform()
 
