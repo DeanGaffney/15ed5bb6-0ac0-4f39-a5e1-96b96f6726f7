@@ -1,21 +1,29 @@
 package com.sensor.result;
 
 
-public class Result<T, E> {
+public class Result<T> {
   private T result;
-  private E error;
+  private Exception error;
 
-  public Result(T result, E error) {
+  public Result(T result, Exception error) {
     this.result = result;
     this.error = error;
   }
 
-  public static <T, E> Result<T, E> ok(T result) {
-    return new Result<T,E>(result, null);
+  public static <T> Result<T> ok(T result) {
+    return new Result<T>(result, null);
   }
 
-  public static <T, E> Result<T, E> error(E error) {
-    return new Result<T,E>(null, error);
+  public static <T> Result<T> error(Exception error) {
+    return new Result<T>(null, error);
+  }
+
+  public T getResult() {
+    return this.result;
+  }
+
+  public String getExceptionMessage() {
+    return this.error.getMessage();
   }
 
   public boolean isOk() {

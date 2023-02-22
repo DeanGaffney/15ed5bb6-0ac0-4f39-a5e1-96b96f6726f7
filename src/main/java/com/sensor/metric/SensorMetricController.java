@@ -1,42 +1,63 @@
 package com.sensor.metric;
+
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sensor.Sensor;
+import com.sensor.result.Result;
 
 @RestController()
 public class SensorMetricController {
-  private final SensorMetricRepository repository;
+  private final SensorService sensorService;
+  private final SensorMetricService sensorMetricService;
 
-
-  public SensorMetricController(SensorMetricRepository repository) {
-    this.repository = repository;
+  public SensorMetricController(SensorService sensorService, SensorMetricService sensorMetricService) {
+    this.sensorService = sensorService;
+    this.sensorMetricService = sensorMetricService;
   }
 
   @PostMapping("/sensor/{sensorId}/metric")
-  public List<SensorMetric> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
+  public ResponseEntity<?> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
+    Optional<Sensor> sensor = this.sensorService.getSensorById(sensorId);
+
+    if (sensor.isEmpty()) {
+      return new ResponseEntity<>("Sensor " + sensorId + " does not exist",
+          HttpStatus.NOT_FOUND);
+    }
 
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 
-    List<SensorMetric> sensorMetrics = metrics.stream()
-      .map(metric ->  {
-        return new SensorMetric(sensorId, metric, currentDate);
-      })
-      .collect(Collectors.toList());
+    Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetric(sensor.get(), metrics,
+        currentDate);
 
-      return this.repository.saveAll(sensorMetrics);
+    if (persistResult.isNotOk()) {
+      return ResponseEntity.internalServerError().body("Failed to create sensor metric");
+    }
+
+    return ResponseEntity.ok(persistResult.getResult());
   }
 
   @PostMapping("/sensor/metric/query")
-  public List<SensorMetric> getSensorMetrics(@RequestBody SensorMetricQuery query) {
-    // TODO perform validation here
-    // TODO pass the query off to a service class
+  public ResponseEntity<?> getSensorMetrics(@RequestBody SensorMetricQuery query) {
+
+    Result<SensorMetricQuery> validateResult = query.validate();
+
+    if (validateResult.isNotOk()) {
+      return new ResponseEntity<>(validateResult.getExceptionMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    return ResponseEntity.ok().build();
 
   }
 

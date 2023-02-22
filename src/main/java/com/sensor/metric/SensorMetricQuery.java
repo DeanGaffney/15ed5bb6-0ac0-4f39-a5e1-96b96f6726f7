@@ -2,6 +2,8 @@ package com.sensor.metric;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +20,11 @@ public class SensorMetricQuery {
 
   private Optional<LocalDateTime> endDate;
 
-  
   public SensorMetricQuery(
       List<MetricType> metricTypes,
       Optional<List<Long>> sensorIds,
       Optional<LocalDateTime> fromDate,
-      Optional<LocalDateTime> endDate
-    ) {
+      Optional<LocalDateTime> endDate) {
     this.metricTypes = metricTypes;
     this.sensorIds = sensorIds;
     this.fromDate = fromDate;
@@ -35,20 +35,38 @@ public class SensorMetricQuery {
     return this.sensorIds.isPresent() && this.sensorIds.get().size() > 0;
   }
 
-  public boolean containsDateRange(){
+  public boolean containsDateRange() {
     return this.fromDate.isPresent() && this.endDate.isPresent();
+  }
+
+  public boolean containsValidDateRange() {
+    return this.fromDate.get().compareTo(this.endDate.get()) >= 0;
   }
 
   public List<MetricType> getMetricTypes() {
     return this.metricTypes;
   }
 
-  public Result<SensorMetricQuery, InvalidParameterException> validate(){
-    // this.metricTypes.stream().allMatch(metricType -> 
-    // check if metric types are valid
-    // check if from date is less than end date if present
-    // check if date range is less than or equal to a month
-    //
-    // return the Result for the controller or service to handle
+  public Result<SensorMetricQuery> validate() {
+    boolean containsValidMetricTypes = this.metricTypes.stream().allMatch(metricType -> {
+      return Arrays.asList(MetricType.values()).contains(metricType);
+    });
+
+    if (!containsValidMetricTypes) {
+      return Result.error(new InvalidParameterException("Query contains invalid metric types"));
+    }
+
+    // TODO refactor all date logic and functions in here out to a DateRange object
+    if (this.containsDateRange() && !this.containsValidDateRange()) {
+      return Result.error(
+          new InvalidParameterException("Date Range is invalid. Make sure the from date is less than the end date"));
+    }
+
+    long difference = ChronoUnit.MONTHS.between(this.fromDate.get(), this.endDate.get());
+    if (difference >= 1) {
+      return Result.error(new InvalidParameterException("Date range must not be greater than a month"));
+    }
+
+    return Result.ok(this);
   }
 }

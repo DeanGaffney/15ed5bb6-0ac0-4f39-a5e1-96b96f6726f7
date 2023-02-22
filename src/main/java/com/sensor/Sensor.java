@@ -7,14 +7,15 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Sensor {
-  @Id 
-  @GeneratedValue 
+  @Id
+  @GeneratedValue
   private Long id;
 
   @NotBlank(message = "Name is required")
   private String name;
 
-  public Sensor(){}
+  public Sensor() {
+  }
 
   public Sensor(String name) {
     this.name = name;
