@@ -1,5 +1,6 @@
 package com.sensor;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -56,7 +59,9 @@ public class SensorControllerTest {
   public void shouldFindAllSensors() throws Exception {
     List<Sensor> sensors = new ArrayList<Sensor>();
 
-    for (int i = 0; i < 10; i++) {
+    int iterations = 10;
+
+    for (int i = 0; i < iterations; i++) {
       Sensor persistedSensor = new Sensor("test sensor " + i + 1);
       persistedSensor.setId((long) i + 1);
       sensors.add(persistedSensor);
@@ -72,6 +77,6 @@ public class SensorControllerTest {
     mockMvc.perform(requestbuilder)
         .andDo(MockMvcResultHandlers.print())
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.sensors", hasSize(10)));
+        .andExpect(MockMvcResultMatchers.jsonPath("$.sensors", hasSize(iterations)));
   }
 }
