@@ -2,10 +2,7 @@
 Sensor API
 
 # TODO
-- Store some metrics in database
-- Look at database schema
-- Make sure restarting containers persists data
-- Write query for database
+- Get API responses formatted correctly
 - Write tests
 - Add redis cache
 - Document everything in the README to this point

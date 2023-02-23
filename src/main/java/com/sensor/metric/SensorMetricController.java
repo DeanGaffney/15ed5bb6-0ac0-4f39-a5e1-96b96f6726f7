@@ -56,7 +56,9 @@ public class SensorMetricController {
       return new ResponseEntity<>(validateResult.getExceptionMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    this.sensorMetricService.queryMetrics(query);
+    Result<List<SensorMetricQueryResult>> queryResults = this.sensorMetricService.queryMetrics(query);
+
+    // TODO formatting on response
     return ResponseEntity.ok().build();
 
   }

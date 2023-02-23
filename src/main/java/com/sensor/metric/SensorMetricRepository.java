@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.sensor.result.Result;
+
 @Repository
 public class SensorMetricRepository {
 
@@ -18,9 +20,11 @@ public class SensorMetricRepository {
     this.entityManager = entityManager;
   }
 
-  public void querySensorMetrics(SensorMetricQuery query) {
+  public Result<List<SensorMetricQueryResult>> querySensorMetrics(SensorMetricQuery query) {
     SensorMetricQueryBuilder builder = new SensorMetricQueryBuilder();
 
+
+    try {
     builder.select(Arrays.asList("sensor_id as sensorId", "metric_type as metricType,"))
         .selectWithStatistics("metric_value", query.getStatistics())
         .from("sensor_metric")
@@ -42,16 +46,16 @@ public class SensorMetricRepository {
         .groupBy(Arrays.asList("sensor_id", "metric_type"))
         .build();
 
+    // warning is unavoidable when running a native query and casting to a POJO
     @SuppressWarnings("unchecked")
-    List<SensorMetricQueryResult> result = entityManager.createNativeQuery(querytoExecute, SensorMetricQueryResult.class).getResultList();
+    List<SensorMetricQueryResult> result = entityManager
+        .createNativeQuery(querytoExecute, SensorMetricQueryResult.class)
+        .getResultList();
 
-    result.forEach(r -> {
-      System.out.println("Sensor id " + r.getSensorId());
-      System.out.println("Metric type" + r.getMetricType());
-      System.out.println("Max " + r.getMax());
-      System.out.println("Min " + r.getMin());
-      System.out.println("Sum" + r.getSum());
-      System.out.println("Avg" + r.getAvg());
-    });
+    return Result.ok(result);
+    } catch (Exception e) {
+      // TODO add logging here
+      return Result.error(new RuntimeException("Failed to execute query"));
+    }
   }
 }

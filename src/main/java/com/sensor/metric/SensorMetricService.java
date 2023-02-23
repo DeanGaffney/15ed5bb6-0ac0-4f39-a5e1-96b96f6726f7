@@ -35,9 +35,8 @@ public class SensorMetricService {
     }
   }
 
-  public Result<?> queryMetrics(SensorMetricQuery query) {
-    this.sensorMetricRepository.querySensorMetrics(query);
-    return null;
+  public Result<List<SensorMetricQueryResult>> queryMetrics(SensorMetricQuery query) {
+    return this.sensorMetricRepository.querySensorMetrics(query);
   }
 
 }
