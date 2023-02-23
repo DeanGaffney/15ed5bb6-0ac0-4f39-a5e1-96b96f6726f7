@@ -1,11 +1,9 @@
 package com.sensor.metric;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.Sensor;
+import com.sensor.SensorService;
 import com.sensor.result.Result;
 
-@RestController()
+@RestController
 public class SensorMetricController {
   private final SensorService sensorService;
   private final SensorMetricService sensorMetricService;
@@ -57,6 +56,7 @@ public class SensorMetricController {
       return new ResponseEntity<>(validateResult.getExceptionMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    this.sensorMetricService.queryMetrics(query);
     return ResponseEntity.ok().build();
 
   }

@@ -10,23 +10,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-
 @Entity
 public class SensorMetric {
 
   private @Id @GeneratedValue Long id;
 
+  @Column(name = "sensor_id")
   private Long sensorId;
 
-  // Metric is separated out into its own class, but there is no need for a separate table
+  // Metric is separated out into its own class, but there is no need for a
+  // separate table
   // the columns for metric should be added to the senor_metric table
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "metricType", column = @Column(name="metric_type")),
-    @AttributeOverride(name = "value", column = @Column(name="metric_value"))
+      @AttributeOverride(name = "metricType", column = @Column(name = "metric_type")),
+      @AttributeOverride(name = "value", column = @Column(name = "metric_value"))
   })
   private Metric metric;
 
+  @Column(name = "created_date")
   private LocalDateTime createdDate;
 
   public SensorMetric(Long sensorId, Metric metric, LocalDateTime createdDate) {
@@ -47,7 +49,7 @@ public class SensorMetric {
     return this.metric;
   }
 
-  public LocalDateTime getCreatedDate(){
+  public LocalDateTime getCreatedDate() {
     return this.createdDate;
   }
 }

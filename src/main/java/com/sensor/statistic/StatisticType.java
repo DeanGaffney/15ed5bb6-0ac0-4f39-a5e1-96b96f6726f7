@@ -1,13 +1,14 @@
-package com.sensor.metric;
+package com.sensor.statistic;
 
-public enum MetricType {
-  TEMPERATURE("temperature"),
-  WIND_SPEED("windSpeed"),
-  HUMIDITY("humidity");
+public enum StatisticType {
+  SUM("sum"),
+  MAX("max"),
+  MIN("min"),
+  AVG("avg");
 
   private String type;
 
-  MetricType(String type) {
+  StatisticType(String type) {
     this.type = type;
   }
 

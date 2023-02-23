@@ -12,9 +12,11 @@ import com.sensor.result.Result;
 @Service
 public class SensorMetricService {
   private final SensorMetricRepository sensorMetricRepository;
+  private final SensorMetricCrudRepository crudRepository;
 
-  public SensorMetricService(SensorMetricRepository sensorMetricRepository) {
+  public SensorMetricService(SensorMetricRepository sensorMetricRepository, SensorMetricCrudRepository crudRepository) {
     this.sensorMetricRepository = sensorMetricRepository;
+    this.crudRepository = crudRepository;
   }
 
   public Result<List<SensorMetric>> createSensorMetric(Sensor sensor, List<Metric> metrics, LocalDateTime currentDate) {
@@ -25,7 +27,7 @@ public class SensorMetricService {
             return new SensorMetric(sensor.getId(), metric, currentDate);
           })
           .collect(Collectors.toList());
-      return Result.ok(this.sensorMetricRepository.saveAll(sensorMetrics));
+      return Result.ok(this.crudRepository.saveAll(sensorMetrics));
     } catch (Exception e) {
       // TODO add logging for original exception
       return Result.error(
@@ -34,6 +36,7 @@ public class SensorMetricService {
   }
 
   public Result<?> queryMetrics(SensorMetricQuery query) {
+    this.sensorMetricRepository.querySensorMetrics(query);
     return null;
   }
 
