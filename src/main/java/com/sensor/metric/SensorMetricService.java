@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.sensor.result.Result;
 
 @Service
 public class SensorMetricService {
+  Logger logger = LoggerFactory.getLogger(SensorMetricService.class);
+
   private final SensorMetricRepository sensorMetricRepository;
   private final SensorMetricCrudRepository crudRepository;
 
@@ -29,7 +33,7 @@ public class SensorMetricService {
           .collect(Collectors.toList());
       return Result.ok(this.crudRepository.saveAll(sensorMetrics));
     } catch (Exception e) {
-      // TODO add logging for original exception
+      logger.error("Failed to create sensor metric", e);
       return Result.error(
           new RuntimeException("Failed to create sensor metric for sensor with id " + sensorId));
     }

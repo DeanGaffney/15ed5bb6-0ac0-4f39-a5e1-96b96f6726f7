@@ -2,15 +2,18 @@
 Sensor API
 
 # TODO
-- Get API responses formatted correctly
-- Write tests
-- Add redis cache
-- Document everything in the README to this point
-- Refactor all TODOs
-- Add a Message Broker
+- Write tests with coverage
+- Database index
+- Swagger
 - Document how to run everything
 - Document iterative approach
-
+- Document/Diagrams for redis cache, read replicas(read heavy application) & message broker for write heavy application
+- Document improvements & parts that are not completed
+- Scripts for generating/testing the API easily
+- Document the scripts
+- Refactor all TODOs
+- Add redis cache
+- Add a Message Broker
 
 ## API
 
@@ -66,8 +69,8 @@ REQUEST
     "sensorIds": [1, 4, 7], // if not provided, all will be retrieved
     "metrics": ["TEMPERATURE", "HUMIDITY"],// if not provided all metric types will be retrieved
     "statistics": "SUM" // if not provided, defaults to AVG
-    "fromDate": "2023-02-22",// must provide both fromDate and endDate, if range is not provided defaults to latest records
-    "endDate": "2023-03-23"
+    "fromDate": "2023-02-22T00:00:00", // both fromDate and endDate must be provided
+    "endDate": "2023-03-20T23:59:59"
 }
 ```
 

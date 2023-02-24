@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +18,8 @@ import com.sensor.statistic.StatisticType;
 
 @Repository
 public class SensorMetricRepository {
+
+  Logger logger = LoggerFactory.getLogger(SensorMetricRepository.class);
 
   @Autowired
   private final EntityManager entityManager;
@@ -66,7 +70,7 @@ public class SensorMetricRepository {
 
       return Result.ok(result);
     } catch (Exception e) {
-      // TODO add logging here
+      logger.error("Failed to execute query", e);
       return Result.error(new RuntimeException("Failed to execute query"));
     }
   }

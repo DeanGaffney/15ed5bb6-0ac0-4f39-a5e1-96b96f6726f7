@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,8 @@ import com.sensor.result.Result;
 
 @RestController
 public class SensorMetricController {
+  Logger logger = LoggerFactory.getLogger(SensorMetricController.class);
+
   private final SensorMetricService sensorMetricService;
 
   public SensorMetricController(SensorMetricService sensorMetricService) {
@@ -29,6 +33,7 @@ public class SensorMetricController {
   public ResponseEntity<?> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 
+    logger.info("Creating " + metrics.size() + " metric(s) for sensor with id " + sensorId);
     Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetric(sensorId, metrics,
         currentDate);
 
@@ -36,22 +41,26 @@ public class SensorMetricController {
       return ResponseEntity.internalServerError().body("Failed to create sensor metric");
     }
 
+    logger.info("Successfully created " + metrics.size() + " metric(s) for sensor id " + sensorId);
     return ResponseEntity.ok(persistResult.getResult());
   }
 
   @PostMapping("/sensor/metric/query")
   public ResponseEntity<Map<String, Object>> getSensorMetrics(@RequestBody SensorMetricQuery query) {
-
     Result<SensorMetricQuery> validateResult = query.validate();
 
     if (validateResult.isNotOk()) {
+      logger.error("Query was invalid, with reason: " + validateResult.getExceptionMessage());
       ApiResponseBody body = ApiResponseBody.createErrorResponse(validateResult.getExceptionMessage());
       return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
     }
 
+    logger.info("Executing query");
+
     Result<Map<Long, List<SensorMetricQueryResult>>> queryResult = this.sensorMetricService.queryMetrics(query);
 
     if (queryResult.isNotOk()) {
+      logger.error("Failed to execute query with reason: " + queryResult.getExceptionMessage());
       ApiResponseBody body = ApiResponseBody.createErrorResponse(queryResult.getExceptionMessage());
       return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -79,6 +88,8 @@ public class SensorMetricController {
 
     body.add("statistic", query.getStatistic());
     body.add("results", results);
+
+    logger.info("Successfully executed query");
 
     return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.OK);
   }
