@@ -2,8 +2,10 @@ package com.sensor.metric;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,32 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.Sensor;
-import com.sensor.SensorService;
+import com.sensor.api.response.ApiResponseBody;
 import com.sensor.result.Result;
 
 @RestController
 public class SensorMetricController {
-  private final SensorService sensorService;
   private final SensorMetricService sensorMetricService;
 
-  public SensorMetricController(SensorService sensorService, SensorMetricService sensorMetricService) {
-    this.sensorService = sensorService;
+  public SensorMetricController(SensorMetricService sensorMetricService) {
     this.sensorMetricService = sensorMetricService;
   }
 
   @PostMapping("/sensor/{sensorId}/metric")
   public ResponseEntity<?> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
-    Optional<Sensor> sensor = this.sensorService.getSensorById(sensorId);
-
-    if (sensor.isEmpty()) {
-      return new ResponseEntity<>("Sensor " + sensorId + " does not exist",
-          HttpStatus.NOT_FOUND);
-    }
-
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 
-    Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetric(sensor.get(), metrics,
+    Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetric(sensorId, metrics,
         currentDate);
 
     if (persistResult.isNotOk()) {
@@ -48,19 +40,51 @@ public class SensorMetricController {
   }
 
   @PostMapping("/sensor/metric/query")
-  public ResponseEntity<?> getSensorMetrics(@RequestBody SensorMetricQuery query) {
+  public ResponseEntity<Map<String, Object>> getSensorMetrics(@RequestBody SensorMetricQuery query) {
 
     Result<SensorMetricQuery> validateResult = query.validate();
 
     if (validateResult.isNotOk()) {
-      return new ResponseEntity<>(validateResult.getExceptionMessage(), HttpStatus.BAD_REQUEST);
+      ApiResponseBody body = ApiResponseBody.createErrorResponse(validateResult.getExceptionMessage());
+      return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
     }
 
-    Result<List<SensorMetricQueryResult>> queryResults = this.sensorMetricService.queryMetrics(query);
+    Result<Map<Long, List<SensorMetricQueryResult>>> queryResult = this.sensorMetricService.queryMetrics(query);
 
-    // TODO formatting on response
-    return ResponseEntity.ok().build();
+    if (queryResult.isNotOk()) {
+      ApiResponseBody body = ApiResponseBody.createErrorResponse(queryResult.getExceptionMessage());
+      return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+    // TODO make a dedicated serializer for this class
+    ApiResponseBody body = new ApiResponseBody();
+
+    Map<Long, List<SensorMetricQueryResult>> groupedResults = queryResult.getResult();
+
+    List<Map<String, Object>> results = groupedResults.keySet()
+        .stream()
+        .map(sensorId -> {
+          Map<String, Object> sensorResult = new HashMap<String, Object>();
+
+          sensorResult.put("sensorId", sensorId);
+
+          List<SensorMetricQueryResult> metricResults = groupedResults.get(sensorId);
+          List<Map<String, Object>> metricMaps = metricResults.stream()
+              .peek(r -> {
+                System.out.println(r.toString());
+              })
+              .map(metricResult -> metricResult.toMap())
+              .collect(Collectors.toList());
+
+          sensorResult.put("metrics", metricMaps);
+          return sensorResult;
+        })
+        .collect(Collectors.toList());
+
+    body.add("statistic", query.getStatistic());
+    body.add("results", results);
+
+    return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.OK);
   }
 
 }

@@ -2,7 +2,6 @@ package com.sensor.metric;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,23 +14,18 @@ public class SensorMetricQueryBuilder {
     this.queryParts = new ArrayList<String>();
   }
 
-  SensorMetricQueryBuilder selectWithStatistics(String columnName, List<StatisticType> statistics) {
+  SensorMetricQueryBuilder selectWithStatistic(String columnName, StatisticType statistic) {
 
-    List<String> statisticQueries = Arrays.asList(StatisticType.values())
-        .stream()
-        .map(statisticType -> {
-          String statType = statisticType.getType();
-          return statType.toUpperCase() + "(" + columnName + ") as " + statType;
-        })
-        .collect(Collectors.toList());
+    String statType = statistic.getType();
+    String selectPart = statType.toUpperCase() + "(" + columnName + ") as statistic_value";
 
-    this.queryParts.add(String.join(", ", statisticQueries));
+    this.queryParts.add(String.join(", ", selectPart));
 
     return this;
   }
 
   SensorMetricQueryBuilder metricsMatch(String columnName, List<MetricType> metricTypes) {
-    List<String> normalizedTypes = Arrays.asList(MetricType.values())
+    List<String> normalizedTypes = metricTypes
         .stream()
         .map(metricType -> "'" + metricType.getType() + "'")
         .collect(Collectors.toList());

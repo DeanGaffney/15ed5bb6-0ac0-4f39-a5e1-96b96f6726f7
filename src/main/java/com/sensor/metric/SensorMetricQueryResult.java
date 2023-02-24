@@ -1,26 +1,21 @@
 package com.sensor.metric;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
-@Entity
 public class SensorMetricQueryResult {
 
-  @Id
   private Long sensorId;
 
   private MetricType metricType;
 
-  private Double sum;
+  private BigDecimal statisticValue;
 
-  private Double min;
-
-  private Double max;
-
-  private Double avg;
-
-  public SensorMetricQueryResult() {
-
+  public SensorMetricQueryResult(Long sensorId, MetricType metricType, BigDecimal statisticValue) {
+    this.sensorId = sensorId;
+    this.metricType = metricType;
+    this.statisticValue = statisticValue;
   }
 
   public Long getSensorId() {
@@ -31,20 +26,23 @@ public class SensorMetricQueryResult {
     return this.metricType;
   }
 
-  public Double getSum() {
-    return this.sum;
+  public BigDecimal getStatisticValue() {
+    return this.statisticValue;
   }
 
-  public Double getMax() {
-    return this.max;
+  public Map<String, Object> toMap() {
+    Map<String, Object> summary = new HashMap<String, Object>();
+
+    summary.put("metricType", MetricType.typeToValue(metricType.getType()));
+    summary.put("value", this.getStatisticValue());
+
+    return summary;
   }
 
-  public Double getMin() {
-    return this.min;
-  }
-
-  public Double getAvg() {
-    return this.avg;
+  public String toString() {
+    return "[sensorId = " + this.getSensorId() + ", " +
+        "metricType = " + this.getMetricType().getType() + ", " +
+        "statisticValue = " + this.getStatisticValue();
   }
 
 }

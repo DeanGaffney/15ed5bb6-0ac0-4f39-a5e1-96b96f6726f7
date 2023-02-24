@@ -108,23 +108,18 @@ RESPONSE
 200 status code
 ```json
 {
+    "statistic": "SUM",
   "results": [
     {
       "sensorId": 1,
       "metrics": [
         {
           "metricType": "temperature",
-          "statistics": {
-            "sum": 30,
-            "max": 40
-          }
+          "value": 50
         },
         {
           "metricType": "humidity",
-          "statistics": {
-            "sum": 10,
-            "max": 7
-          }
+
         }
       ]
     }

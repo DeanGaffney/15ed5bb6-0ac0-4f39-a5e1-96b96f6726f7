@@ -43,7 +43,7 @@ public class SensorMetricQueryBuilderTest {
         .and()
         .whereValueIn("sensor_id", "sensorIds")
         .and()
-        .metricsMatch("metric_type", query.getMetrics())
+        .metricsMatch("metric_type", query.getMetric())
         .groupBy(Arrays.asList("sensor_id", "metric_type"))
         .build();
 

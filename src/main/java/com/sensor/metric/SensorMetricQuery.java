@@ -16,7 +16,7 @@ public class SensorMetricQuery {
 
   private Optional<List<Long>> sensorIds;
 
-  private Optional<List<StatisticType>> statistics;
+  private Optional<StatisticType> statistic;
 
   private Optional<LocalDateTime> fromDate;
 
@@ -25,12 +25,14 @@ public class SensorMetricQuery {
   public SensorMetricQuery(
       Optional<List<MetricType>> metrics,
       Optional<List<Long>> sensorIds,
-      Optional<List<StatisticType>> statistics,
+      Optional<StatisticType> statistic,
       Optional<LocalDateTime> fromDate,
       Optional<LocalDateTime> endDate) {
     this.metrics = metrics;
     this.sensorIds = sensorIds;
-    this.statistics = statistics;
+    this.statistic = statistic;
+    System.out.println(this.statistic.isPresent());
+    System.out.println(this.statistic.get());
     this.fromDate = fromDate;
     this.endDate = endDate;
   }
@@ -52,9 +54,8 @@ public class SensorMetricQuery {
     return this.metrics.orElse(Arrays.asList(MetricType.values()));
   }
 
-  public List<StatisticType> getStatistics() {
-    // default to returnin all statistic types
-    return this.statistics.orElse(Arrays.asList(StatisticType.values()));
+  public StatisticType getStatistic() {
+    return this.statistic.orElse(StatisticType.AVG);
   }
 
   public List<Long> getSensorIds() {
@@ -78,9 +79,7 @@ public class SensorMetricQuery {
       return Result.error(new InvalidParameterException("Query contains invalid metric types"));
     }
 
-    boolean containsValidStatisitics = this.getStatistics().stream().allMatch(statistic -> {
-      return Arrays.asList(StatisticType.values()).contains(statistic);
-    });
+    boolean containsValidStatisitics = Arrays.asList(StatisticType.values()).contains(this.getStatistic());
 
     if (!containsValidStatisitics) {
       return Result.error(new InvalidParameterException("Query contains invalid statistic types"));
