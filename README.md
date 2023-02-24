@@ -5,15 +5,16 @@ Sensor API
 - Write tests with coverage
 - Database index
 - Swagger
-- Document how to run everything
-- Document iterative approach
+- Document how to run everything (docker, local, tests)
 - Document/Diagrams for redis cache, read replicas(read heavy application) & message broker for write heavy application
-- Document improvements & parts that are not completed
 - Scripts for generating/testing the API easily
 - Document the scripts
 - Refactor all TODOs
 - Add redis cache
 - Add a Message Broker
+- Document iterative approach
+- Document improvements & parts that are not completed
+
 
 ## API
 
