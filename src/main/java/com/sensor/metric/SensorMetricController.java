@@ -68,11 +68,7 @@ public class SensorMetricController {
 
           sensorResult.put("sensorId", sensorId);
 
-          List<SensorMetricQueryResult> metricResults = groupedResults.get(sensorId);
-          List<Map<String, Object>> metricMaps = metricResults.stream()
-              .peek(r -> {
-                System.out.println(r.toString());
-              })
+          List<Map<String, Object>> metricMaps = groupedResults.get(sensorId).stream()
               .map(metricResult -> metricResult.toMap())
               .collect(Collectors.toList());
 

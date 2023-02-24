@@ -66,8 +66,6 @@ public class SensorMetricRepository {
 
       return Result.ok(result);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      e.printStackTrace();
       // TODO add logging here
       return Result.error(new RuntimeException("Failed to execute query"));
     }

@@ -42,27 +42,9 @@ public class SensorMetricService {
       return Result.error(new RuntimeException("Failed to query metrics"));
     }
 
-    System.out.println("Before mapping");
-    queryResult.getResult()
-        .stream()
-        .peek(r -> {
-          System.out.println(r.toString());
-        });
-
     Map<Long, List<SensorMetricQueryResult>> resultsGroupedBySensorId = queryResult.getResult()
         .stream()
         .collect(Collectors.groupingBy(SensorMetricQueryResult::getSensorId));
-
-    resultsGroupedBySensorId.keySet()
-        .stream()
-        .peek(id -> {
-          System.out.println("SENSOR ID " + id);
-          resultsGroupedBySensorId.get(id)
-              .stream()
-              .peek(r -> {
-                System.out.println(r.toString());
-              });
-        });
 
     return Result.ok(resultsGroupedBySensorId);
   }

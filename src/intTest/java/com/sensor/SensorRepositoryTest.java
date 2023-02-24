@@ -15,7 +15,6 @@ public class SensorRepositoryTest {
   @Test
   public void shouldSaveSensor() {
     Sensor sensor = new Sensor("test sensor");
-    System.out.println(sensor.getName());
     Sensor persistedSensor = sensorRepository.save(sensor);
 
     Sensor retrievedSensor = sensorRepository.findById(persistedSensor.getId()).get();

@@ -31,8 +31,6 @@ public class SensorMetricQuery {
     this.metrics = metrics;
     this.sensorIds = sensorIds;
     this.statistic = statistic;
-    System.out.println(this.statistic.isPresent());
-    System.out.println(this.statistic.get());
     this.fromDate = fromDate;
     this.endDate = endDate;
   }
@@ -82,13 +80,15 @@ public class SensorMetricQuery {
     boolean containsValidStatisitics = Arrays.asList(StatisticType.values()).contains(this.getStatistic());
 
     if (!containsValidStatisitics) {
-      return Result.error(new InvalidParameterException("Query contains invalid statistic types"));
+      return Result.error(new InvalidParameterException("Query contains invalid statistic type"));
     }
 
-    // TODO refactor all date logic and functions in here out to a DateRange object
-    if (this.containsDateRange() && !this.containsValidDateRange()) {
-      return Result.error(
-          new InvalidParameterException("Date Range is invalid. Make sure the from date is less than the end date"));
+    if (!this.containsDateRange()) {
+      return Result.error(new InvalidParameterException("Date range must be provided."));
+    }
+
+    if (!this.containsValidDateRange()) {
+      return Result.error( new InvalidParameterException("Date Range is invalid. Make sure the from date is less than the end date"));
     }
 
     long difference = ChronoUnit.MONTHS.between(this.fromDate.get(), this.endDate.get());
