@@ -45,8 +45,6 @@ public class SensorMetricQueryBuilderTest {
         .groupBy(Arrays.asList("sensor_id", "metric_type"))
         .build();
 
-    System.out.println(dbQuery);
-
     assertEquals("SELECT sensor_id, metric_type, AVG(metric_type) as statistic_value " +
         "FROM sensor_metric " +
         "WHERE created_date BETWEEN " + "'" + 

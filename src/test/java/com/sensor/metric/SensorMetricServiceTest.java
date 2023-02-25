@@ -38,8 +38,8 @@ public class SensorMetricServiceTest {
     Long sensorId = 1l;
     List<Metric> metrics = new ArrayList<>();
 
-    metrics.add(new Metric(MetricType.TEMPERATURE, 2.5));
-    metrics.add(new Metric(MetricType.HUMIDITY, 5));
+    metrics.add(new Metric(MetricType.TEMPERATURE, new BigDecimal(2.5)));
+    metrics.add(new Metric(MetricType.HUMIDITY, new BigDecimal(5)));
 
     LocalDateTime createdDate = LocalDateTime.of(2023, 2, 25, 0, 0);
 
@@ -71,8 +71,8 @@ public class SensorMetricServiceTest {
     Long sensorId = 1l;
     List<Metric> metrics = new ArrayList<>();
 
-    metrics.add(new Metric(MetricType.TEMPERATURE, 2.5));
-    metrics.add(new Metric(MetricType.HUMIDITY, 5));
+    metrics.add(new Metric(MetricType.TEMPERATURE, new BigDecimal(2.5)));
+    metrics.add(new Metric(MetricType.HUMIDITY, new BigDecimal(5)));
 
     LocalDateTime createdDate = LocalDateTime.of(2023, 2, 25, 0, 0);
 
@@ -140,13 +140,13 @@ public class SensorMetricServiceTest {
         MetricType.TEMPERATURE);
     assertEquals(
         resultsGroupBySensorId.get(sensorIds.get().get(0)).get(0).getStatisticValue(),
-        new BigDecimal(2.5));
+        sensorMetricQueryResults.get(0).getStatisticValue());
     assertEquals(
         resultsGroupBySensorId.get(sensorIds.get().get(0)).get(1).getMetricType(),
         MetricType.WIND_SPEED);
     assertEquals(
         resultsGroupBySensorId.get(sensorIds.get().get(0)).get(1).getStatisticValue(),
-        new BigDecimal(0.5));
+        sensorMetricQueryResults.get(1).getStatisticValue());
 
     // sensor id 2 has one metric
     assertEquals(resultsGroupBySensorId.get(sensorIds.get().get(1)).size(), 1);
@@ -156,7 +156,7 @@ public class SensorMetricServiceTest {
         MetricType.HUMIDITY);
     assertEquals(
         resultsGroupBySensorId.get(sensorIds.get().get(1)).get(0).getStatisticValue(),
-        new BigDecimal(10));
+        sensorMetricQueryResults.get(2).getStatisticValue());
   }
 
   @Test

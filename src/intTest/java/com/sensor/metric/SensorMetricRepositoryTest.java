@@ -8,6 +8,7 @@ import com.sensor.statistic.StatisticType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +31,9 @@ public class SensorMetricRepositoryTest {
 
     Optional<List<Long>> sensorIds = Optional.of(Arrays.asList(new Long[] { 1l, 2l }));
 
-    Metric metric1 = new Metric(MetricType.HUMIDITY, 0.5);
-    Metric metric2 = new Metric(MetricType.TEMPERATURE, 30);
-    Metric metric3 = new Metric(MetricType.WIND_SPEED, 40);
+    Metric metric1 = new Metric(MetricType.HUMIDITY, new BigDecimal(5.00));
+    Metric metric2 = new Metric(MetricType.TEMPERATURE, new BigDecimal(30));
+    Metric metric3 = new Metric(MetricType.WIND_SPEED, new BigDecimal(40));
 
     SensorMetric sensorMetric1 = new SensorMetric(sensorIds.get().get(0), metric1, createdDate);
 
@@ -68,10 +69,10 @@ public class SensorMetricRepositoryTest {
 
     assertEquals(sensorMetricResults.get(0).getSensorId(), sensorIds.get().get(0));
     assertEquals(sensorMetricResults.get(0).getMetricType(), metric1.getMetricType());
-    assertEquals(sensorMetricResults.get(0).getStatisticValue().doubleValue(), metric1.getValue());
+    assertEquals(sensorMetricResults.get(0).getStatisticValue(), metric1.getValue());
 
     assertEquals(sensorMetricResults.get(1).getSensorId(), sensorIds.get().get(0));
     assertEquals(sensorMetricResults.get(1).getMetricType(), metric2.getMetricType());
-    assertEquals(sensorMetricResults.get(1).getStatisticValue().doubleValue(), metric2.getValue());
+    assertEquals(sensorMetricResults.get(1).getStatisticValue(), metric2.getValue());
   }
 }

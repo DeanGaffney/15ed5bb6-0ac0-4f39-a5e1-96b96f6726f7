@@ -1,6 +1,7 @@
 package com.sensor.metric;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class SensorMetricQueryResult {
   }
 
   public BigDecimal getStatisticValue() {
-    return this.statisticValue;
+    return this.statisticValue.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   public Map<String, Object> toMap() {

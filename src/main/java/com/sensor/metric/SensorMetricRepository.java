@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.result.Result;
-import com.sensor.statistic.StatisticType;
 
 @Repository
 public class SensorMetricRepository {
@@ -53,6 +52,8 @@ public class SensorMetricRepository {
           .groupBy(Arrays.asList("sensor_id", "metric_type"))
           .build();
 
+      logger.info("Execuring query - " + querytoExecute);
+
       // warning is unavoidable when running a native query and casting to a POJO
       @SuppressWarnings("unchecked")
       List<Object[]> records = entityManager
@@ -63,7 +64,7 @@ public class SensorMetricRepository {
           .map(record -> {
             BigInteger sensorId = (BigInteger) record[0];
             MetricType metricType = MetricType.typeToValue((String) record[1]);
-            BigDecimal value = StatisticType.convertToBigDecimal(record[2], query.getStatistic());
+            BigDecimal value = (BigDecimal) record[2];
             return new SensorMetricQueryResult(sensorId.longValue(), metricType, value);
           })
           .collect(Collectors.toList());

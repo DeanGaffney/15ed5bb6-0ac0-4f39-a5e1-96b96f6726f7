@@ -28,6 +28,10 @@ services:
       - PGUSER=postgres
       - POSTGRES_PASSWORD=compose-postgres
       - POSTGRES_USER=postgres
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
     healthcheck:
       test: pg_isready
       interval: 5s

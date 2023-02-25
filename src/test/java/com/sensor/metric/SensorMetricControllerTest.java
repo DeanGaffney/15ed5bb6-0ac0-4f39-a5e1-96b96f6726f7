@@ -44,7 +44,7 @@ public class SensorMetricControllerTest {
     LocalDateTime createdDate = LocalDateTime.of(2023, 3, 25, 0, 0);
 
     List<Metric> metrics = new ArrayList<>();
-    metrics.add(new Metric(MetricType.WIND_SPEED, 0.5));
+    metrics.add(new Metric(MetricType.WIND_SPEED, new BigDecimal(0.5)));
 
     List<SensorMetric> sensorMetrics = Arrays.asList(new SensorMetric(sensorId, metrics.get(0), createdDate));
 
@@ -107,7 +107,7 @@ public class SensorMetricControllerTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.results[1].sensorId", is(2)))
         .andExpect(MockMvcResultMatchers.jsonPath("$.results[1].metrics", hasSize(1)))
         .andExpect(MockMvcResultMatchers.jsonPath("$.results[1].metrics[0].metricType", is("WIND_SPEED")))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.results[1].metrics[0].value", is(10)))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.results[1].metrics[0].value", is(10.0)))
         .andExpect(MockMvcResultMatchers.jsonPath("$.results", hasSize(2)));
   }
 

@@ -2,17 +2,13 @@
 Sensor API
 
 # TODO
-- Database index
-- Swagger
 - Document how to run everything (docker, local, tests)
 - Document/Diagrams for redis cache, read replicas(read heavy application) & message broker for write heavy application
-- Scripts for generating/testing the API easily
-- Document the scripts
 - Refactor all TODOs
 - Add redis cache
 - Add a Message Broker
-- Document iterative approach
 - Document improvements & parts that are not completed
+- Database index
 
 ## Completed
 [X] Create sensor metrics via API
@@ -26,7 +22,6 @@ Sensor API
 [X] Unit & Integration Testing with coverage report
 [] Documentation on running locally & with docker
 
-
 ## Improvements
 - Modify query string builder to use prepared statements to prevent SQL injection
 - Create a dedicated DateRange class for the date range validation
@@ -35,20 +30,84 @@ Sensor API
 
 ## Extras
 [X] Test coverage reports
+[X] Bash scripts for generating sample data
 [] Better Database Index
 [] Swagger Documentation
-[] Bash scripts for testing the APIs
 [] Infrastructure Diagrams for different architectures
 
 
 ## Running Locally
+- Your system must have java 11 installed.
+- To run locally **without** using docker run the following:
+```bash
+./gradlew bootRun
+```
+- This will run the application using the H2 in-memory database for local development.
+- The application will be available at `http://localhost:8080`
 
 ## Running with Docker & Postgres
+- Your system must have docker installed.
+- Build application image
+```bash
+docker build -t sensor-api .
+docker-compose up --remove-orphans
+```
+
+- The application will be available at `http://localhost:8080`
+- To access the postgres shell run 
+```bash
+docker ps
+```
+
+- Take note of the container id and run the following:
+```bash
+docker exec -it <CONTAINER-ID> /bin/bash
+```
+
+- Once in the container run the following to login to the postgres database
+```bash
+psql -U postgres
+```
+
+## Generating Some Sample Data
+- The database can be populated with some basic sample data by running
+the following:
+- **NOTE** the scripts assumes you can run `curl` on your system.
+```
+bash ./scripts/generate-data.sh <NUMBER-OF-SENSORS> <NUMBER-OF-REQUEST-PER-SENSOR> 
+```
+- The defaults are `20` for the number of sensors and `100` for the number of requests for each sensor. Each metric request contains 3 metrics per request. So `100` requests will result in `300` metrics being created for a sensor.
 
 ## Database Selection
-- Explain the reasoning for selecting postgres here.
+Why use postgres?
+- Popular, robust, reliable & open-source
+- Can be used for both relational and JSON formatted data, allowing for more flexibility as application requirements change.
+- Powerful query optimizer makes it a good choice for working with large data.
+- Application requirements required complex queries, some NoSQL solutions such as AWS DynamoDB can make querying data difficult once the initial table schema has been created.
 
-### Database Index Selection
+
+## Running Tests & Coverage Report
+- To run unit tests run
+```bash
+./gradlew clean test
+```
+
+- To run integration tests run
+```bash
+./gradlew clean integrationTest
+```
+
+- Test results can be found under:
+Unit Tests - `build/reports/tests/test/index.html`
+Integration Tests - `build/reports/tests/test/index.html`
+
+- To generate a test coverage report run
+```bash
+./gradlew clean jacocoTestReport
+```
+
+- The test coverage report can be found under:
+`build/jacocoHtml/index.html`
 
 ## API
 
@@ -157,4 +216,3 @@ RESPONSE
   ]
 }
 ```
-

@@ -38,8 +38,6 @@ public class SensorMetricController {
     logger.info("Creating " + metrics.size() + " metric(s) for sensor with id " + sensorId);
     Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetrics(sensorId, metrics,
         currentDate);
-    System.out.println("RESUKT " +  persistResult);
-
 
     if (persistResult.isNotOk()) {
       return ResponseEntity.internalServerError().body("Failed to create sensor metric");
