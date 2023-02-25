@@ -114,7 +114,7 @@ Integration Tests - `build/reports/tests/test/index.html`
 ## API
 
 POST /sensor/{sensorId}/metric
-Creates sensor metrics against the given sensor
+Creates a batch of sensor metrics against the given sensor id
 REQUEST
 ```json
 [
