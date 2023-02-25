@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import com.sensor.result.Result;
 public class SensorMetricController {
   Logger logger = LoggerFactory.getLogger(SensorMetricController.class);
 
+  @Autowired
   private final SensorMetricService sensorMetricService;
 
   public SensorMetricController(SensorMetricService sensorMetricService) {
@@ -30,12 +32,14 @@ public class SensorMetricController {
   }
 
   @PostMapping("/sensor/{sensorId}/metric")
-  public ResponseEntity<?> createSensorMetric(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
+  public ResponseEntity<?> createSensorMetrics(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 
     logger.info("Creating " + metrics.size() + " metric(s) for sensor with id " + sensorId);
-    Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetric(sensorId, metrics,
+    Result<List<SensorMetric>> persistResult = this.sensorMetricService.createSensorMetrics(sensorId, metrics,
         currentDate);
+    System.out.println("RESUKT " +  persistResult);
+
 
     if (persistResult.isNotOk()) {
       return ResponseEntity.internalServerError().body("Failed to create sensor metric");

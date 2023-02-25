@@ -39,7 +39,7 @@ public class SensorMetricQuery {
     return this.sensorIds.isPresent() && this.sensorIds.get().size() > 0;
   }
 
-  public boolean containsDateRange() {
+  private boolean containsDateRange() {
     return this.fromDate.isPresent() && this.endDate.isPresent();
   }
 
@@ -69,6 +69,9 @@ public class SensorMetricQuery {
   }
 
   public Result<SensorMetricQuery> validate() {
+    // TODO convert this class to using STRINGS, then convert them to enums once
+    // marshalled by jackson, as the stats and metrics can not be validated
+    // correctly with a good error response
     boolean containsValidMetricTypes = this.getMetrics().stream().allMatch(metricType -> {
       return Arrays.asList(MetricType.values()).contains(metricType);
     });
@@ -89,7 +92,7 @@ public class SensorMetricQuery {
 
     if (!this.containsValidDateRange()) {
       return Result.error(
-          new InvalidParameterException("Date Range is invalid. Make sure the from date is less than the end date"));
+          new InvalidParameterException("Date range is invalid. Make sure the from date is less than the end date"));
     }
 
     long difference = ChronoUnit.MONTHS.between(this.fromDate.get(), this.endDate.get());

@@ -2,7 +2,6 @@
 Sensor API
 
 # TODO
-- Write tests with coverage
 - Database index
 - Swagger
 - Document how to run everything (docker, local, tests)
@@ -15,6 +14,41 @@ Sensor API
 - Document iterative approach
 - Document improvements & parts that are not completed
 
+## Completed
+[X] Create sensor metrics via API
+[X] Query Metrics for one or more sensors
+[X] Query Metrics and default to all sensor ids if none are provided
+[X] Query Metrics for a specific statistic
+[X] Query Metrics and default to AVG statistic if one is not provided
+[X] Query Metrics between a date range
+[] Query Metrics without a date range
+    - Time constraints, did not get to come back and complete this.
+[X] Unit & Integration Testing with coverage report
+[] Documentation on running locally & with docker
+
+
+## Improvements
+- Modify query string builder to use prepared statements to prevent SQL injection
+- Create a dedicated DateRange class for the date range validation
+- Create dedicated response or serialization classes for constructing complex responses such as the metric query results.
+- Add better validation for Enum types (needs custom validator)
+
+## Extras
+[X] Test coverage reports
+[] Better Database Index
+[] Swagger Documentation
+[] Bash scripts for testing the APIs
+[] Infrastructure Diagrams for different architectures
+
+
+## Running Locally
+
+## Running with Docker & Postgres
+
+## Database Selection
+- Explain the reasoning for selecting postgres here.
+
+### Database Index Selection
 
 ## API
 
@@ -79,7 +113,7 @@ RESPONSE
 200 status code
 ```json
 {
-    "statistic": "SUM",
+  "statistic": "SUM",
   "results": [
     {
       "sensorId": 1,

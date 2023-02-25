@@ -42,7 +42,7 @@ public class SensorMetricQueryResult {
   public String toString() {
     return "[sensorId = " + this.getSensorId() + ", " +
         "metricType = " + this.getMetricType().getType() + ", " +
-        "statisticValue = " + this.getStatisticValue();
+        "statisticValue = " + this.getStatisticValue() + "]";
   }
 
 }

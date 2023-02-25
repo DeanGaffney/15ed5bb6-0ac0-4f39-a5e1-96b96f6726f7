@@ -23,7 +23,8 @@ public class SensorMetricService {
     this.crudRepository = crudRepository;
   }
 
-  public Result<List<SensorMetric>> createSensorMetric(Long sensorId, List<Metric> metrics, LocalDateTime currentDate) {
+  public Result<List<SensorMetric>> createSensorMetrics(Long sensorId, List<Metric> metrics,
+      LocalDateTime currentDate) {
 
     try {
       List<SensorMetric> sensorMetrics = metrics.stream()
@@ -35,7 +36,7 @@ public class SensorMetricService {
     } catch (Exception e) {
       logger.error("Failed to create sensor metric", e);
       return Result.error(
-          new RuntimeException("Failed to create sensor metric for sensor with id " + sensorId));
+          new RuntimeException("Failed to create sensor metric(s) for sensor with id " + sensorId));
     }
   }
 
