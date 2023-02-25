@@ -2,12 +2,10 @@
 Sensor API
 
 # TODO
-- Document how to run everything (docker, local, tests)
 - Document/Diagrams for redis cache, read replicas(read heavy application) & message broker for write heavy application
 - Refactor all TODOs
-- Add redis cache
-- Add a Message Broker
-- Document improvements & parts that are not completed
+- Add redis cache (infra diagram)
+- Add a Message Broker (infra diagram)
 - Database index
 
 ## Completed
@@ -38,7 +36,7 @@ Sensor API
 
 ## Running Locally
 - Your system must have java 11 installed.
-- To run locally **without** using docker run the following:
+- To run locally **without** using docker, run the following:
 ```bash
 ./gradlew bootRun
 ```
@@ -50,16 +48,20 @@ Sensor API
 - Build application image
 ```bash
 docker build -t sensor-api .
+```
+
+- To run run the application in a docker container with a postgres container run the following:
+```bash
 docker-compose up --remove-orphans
 ```
 
 - The application will be available at `http://localhost:8080`
-- To access the postgres shell run 
+- To access the postgres shell run:
 ```bash
 docker ps
 ```
 
-- Take note of the container id and run the following:
+- Take note of the postgres container id and run the following:
 ```bash
 docker exec -it <CONTAINER-ID> /bin/bash
 ```
