@@ -221,7 +221,7 @@ RESPONSE
 ### POC Diagram
 - This architecture diagram is based on the architecture which was deliver as part of the POC.
 - Architecture Summary
-    - Single Spring Boot with Java 11
+    - Spring Boot with Java 11
     - Single Postgres Database
 ![POC Diagram](./documentation/architecture/images/poc-architecture.png) 
 
@@ -229,13 +229,35 @@ RESPONSE
 is read or write heavy.
 
 ### Read Heavy Diagram
-- This architecture diagram is based on the idea of the daatbase doing more reads than writes
+- This architecture diagram is based on the idea of the database doing more reads than writes
 - Architecture Summary
-    - Single Spring Boot with Java 11
-        - Single server should be fine as database read replicas, and redis cache should do a lot of the heavy lifting.
-        - Server is only responsible for serializing queries and deserializing query results.
+    - Spring Boot with Java 11
     - Multiple Postgres Database
         - One main write database server
         - Multiple read replicas
-    - Redis Cache to reduce the number of reads on read replicas.
+    - Redis Cache to reduce the number of reads on read replicas the database.
 ![Read Heavy Architecture](./documentation/architecture/images/read-heavy-architecture.png) 
+
+### Write Heavy Diagram
+- This architecture diagram is based on the idea of the database doing more writes than reads
+- Architecture Summary
+    - Spring Boot with Java 11
+    - Multiple Postgres Database
+        - One main write database server
+        - Multiple read replicas
+    - Redis Cache to reduce the number of reads on read replicas the database.
+    - Queue to hold messages before persisting to the database. Allows the replaying of data, and eliminates data loss if the primary database becomes unhealthy.
+![Read Heavy Architecture](./documentation/architecture/images/write-heavy-architecture.png) 
+
+### Read & Write Heavy Diagram
+- This architecture diagram is based on a highly available & scalable architecture
+- Architecture Summary
+    - Deployment components:
+        - Spring Boot with Java 11
+        - Multiple Postgres Database
+            - One main write database server
+            - Multiple read replicas
+        - Redis Cache to reduce the number of reads on read replicas the database.
+        - Queue to hold messages before persisting to the database. Allows the replaying of data, and eliminates data loss if the primary database becomes unhealthy.
+    - Load Balancer used to split traffic to multiple instances of the application
+![Highly Available & Scalable Architecture](./documentation/architecture/images/highly-available-and-scalable-architecture.png) 
