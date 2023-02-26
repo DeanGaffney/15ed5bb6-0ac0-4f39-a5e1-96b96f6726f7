@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.8'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'java'
+  id 'org.springframework.boot' version '2.7.8'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'jacoco'
 }
 
@@ -10,40 +10,40 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 sourceSets {
-    intTest {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-    }
+  intTest {
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+  }
 }
 
 configurations {
-    intTestImplementation.extendsFrom implementation
-    intTestImplementation.extendsFrom testImplementation
-    intTestRuntimeOnly.extendsFrom runtimeOnly
+  intTestImplementation.extendsFrom implementation
+  intTestImplementation.extendsFrom testImplementation
+  intTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 tasks.register('integrationTest', Test) {
-    description = 'Runs integration tests.'
-    group = 'verification'
+  description = 'Runs integration tests.'
+  group = 'verification'
 
-    testClassesDirs = sourceSets.intTest.output.classesDirs
-    classpath = sourceSets.intTest.runtimeClasspath
+  testClassesDirs = sourceSets.intTest.output.classesDirs
+  classpath = sourceSets.intTest.runtimeClasspath
 
-    shouldRunAfter test
+  shouldRunAfter test
 
-    useJUnitPlatform()
+  useJUnitPlatform()
 
-    testLogging {
-        events "passed"
-    }
+  testLogging {
+      events "passed"
+  }
 }
 
 check.dependsOn integrationTest
@@ -65,15 +65,13 @@ jacocoTestReport {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
 
   runtimeOnly 'org.postgresql:postgresql:42.5.4'
-	runtimeOnly 'com.h2database:h2'
+  runtimeOnly 'com.h2database:h2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
   testImplementation 'org.hamcrest:hamcrest:2.2'
 }
-
-
