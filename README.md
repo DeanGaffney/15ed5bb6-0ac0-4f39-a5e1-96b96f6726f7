@@ -22,12 +22,9 @@ Sensor API
 - [] Swagger Documentation
 
 ## Improvements
-- Create a dedicated DateRange class for the date range validation
-- Create dedicated response or serialization classes for constructing complex responses such as the metric query results.
-- Add better validation for Enum types (needs custom validator)
-- Database Migration Scripts (Flyway)
-- Refactor all TODOs
 - Database index for querying needs more work, ran out of time to dig deep into this.
+- Create a dedicated DateRange class for the date range validation
+- Database Migration Scripts (Flyway)
 
 ## Running Locally
 - Your system must have java 11 installed.

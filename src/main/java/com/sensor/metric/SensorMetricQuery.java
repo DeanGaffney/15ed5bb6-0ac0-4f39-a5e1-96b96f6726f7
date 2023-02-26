@@ -77,10 +77,6 @@ public class SensorMetricQuery {
   }
 
   public Result<SensorMetricQuery> validate() {
-    // TODO convert this class to using STRINGS, then convert them to enums once
-    // marshalled by jackson, as the stats and metrics can not be validated
-    //
-    // correctly with a good error response
     boolean containsValidMetricTypes = this.getMetrics().stream().allMatch(metricType -> {
       return Arrays.asList(MetricType.values()).contains(metricType);
     });

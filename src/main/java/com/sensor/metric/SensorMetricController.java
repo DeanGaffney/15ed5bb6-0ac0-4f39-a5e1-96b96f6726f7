@@ -5,6 +5,8 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -12,11 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.sensor.api.response.ApiResponseBody;
 import com.sensor.result.Result;
 
@@ -24,11 +29,30 @@ import com.sensor.result.Result;
 public class SensorMetricController {
   Logger logger = LoggerFactory.getLogger(SensorMetricController.class);
 
+  // handle invalid enum exceptions
+  private static final Pattern ENUM_MSG = Pattern
+      .compile("from String (.*): not one of the values accepted for Enum class: \\[(.*)\\]");
+
   @Autowired
   private final SensorMetricService sensorMetricService;
 
   public SensorMetricController(SensorMetricService sensorMetricService) {
     this.sensorMetricService = sensorMetricService;
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<Map<String, Object>> handleJsonErrors(HttpMessageNotReadableException exception) {
+    if (exception.getCause() != null && exception.getCause() instanceof InvalidFormatException) {
+      Matcher match = ENUM_MSG.matcher(exception.getCause().getMessage());
+      if (match.find()) {
+        ApiResponseBody body = ApiResponseBody
+            .createErrorResponse("Invalid value " + match.group(1) + ". Value should be one of: " + match.group(2));
+        return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    ApiResponseBody body = ApiResponseBody.createErrorResponse(exception.getMessage());
+    return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
   }
 
   @PostMapping("/sensor/{sensorId}/metric")
@@ -48,7 +72,7 @@ public class SensorMetricController {
     logger.info("Successfully created " + metrics.size() + " metric(s) for sensor id " + sensorId);
     ApiResponseBody body = new ApiResponseBody();
     body.add("result", persistResult.getResult());
-    return new ResponseEntity<Map<String,Object>>(body.getBody(), HttpStatus.OK);
+    return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.OK);
   }
 
   @PostMapping("/sensor/metric/query")
@@ -71,7 +95,6 @@ public class SensorMetricController {
       return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // TODO make a dedicated serializer for this class
     ApiResponseBody body = new ApiResponseBody();
 
     Map<Long, List<SensorMetricQueryResult>> groupedResults = queryResult.getResult();
