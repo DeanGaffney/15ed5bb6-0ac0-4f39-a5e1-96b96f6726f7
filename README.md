@@ -8,6 +8,7 @@ Sensor API
 - [X] Query Metrics for a specific statistic
 - [X] Query Metrics and default to AVG statistic if one is not provided
 - [X] Query Metrics between a date range
+- [X] Validation & Error Handling
 - [] Query Metrics without a date range
      - Time constraints, did not get to come back and complete this.
 - [X] Unit & Integration Testing with coverage report
@@ -23,8 +24,8 @@ Sensor API
 
 ## Improvements
 - Database index for querying needs more work, ran out of time to dig deep into this.
-- Create a dedicated DateRange class for the date range validation
 - Database Migration Scripts (Flyway)
+- Create a dedicated DateRange class for the date range validation
 
 ## Running Locally
 - Your system must have java 11 installed.
