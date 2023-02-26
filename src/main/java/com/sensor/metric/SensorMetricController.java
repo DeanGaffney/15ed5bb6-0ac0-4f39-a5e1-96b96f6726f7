@@ -32,7 +32,8 @@ public class SensorMetricController {
   }
 
   @PostMapping("/sensor/{sensorId}/metric")
-  public ResponseEntity<?> createSensorMetrics(@RequestBody List<Metric> metrics, @PathVariable Long sensorId) {
+  public ResponseEntity<Map<String, Object>> createSensorMetrics(@RequestBody List<Metric> metrics,
+      @PathVariable Long sensorId) {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 
     logger.info("Creating " + metrics.size() + " metric(s) for sensor with id " + sensorId);
@@ -40,11 +41,14 @@ public class SensorMetricController {
         currentDate);
 
     if (persistResult.isNotOk()) {
-      return ResponseEntity.internalServerError().body("Failed to create sensor metric");
+      ApiResponseBody body = ApiResponseBody.createErrorResponse("Failed to create sensor metric");
+      return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     logger.info("Successfully created " + metrics.size() + " metric(s) for sensor id " + sensorId);
-    return ResponseEntity.ok(persistResult.getResult());
+    ApiResponseBody body = new ApiResponseBody();
+    body.add("result", persistResult.getResult());
+    return new ResponseEntity<Map<String,Object>>(body.getBody(), HttpStatus.OK);
   }
 
   @PostMapping("/sensor/metric/query")

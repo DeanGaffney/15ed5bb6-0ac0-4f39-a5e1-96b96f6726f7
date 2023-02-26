@@ -106,6 +106,7 @@ Integration Tests - `build/reports/tests/test/index.html`
 `build/jacocoHtml/index.html`
 
 ## API
+
 ### Create Sensor Metrics
 - An API that accepts a batch of metrics to create for the sensor id provided in the 
 path of the URL
@@ -135,30 +136,40 @@ curl --location 'http://localhost:8080/sensor/1/metric' \
     - `metricType` - A metric type. Valid metric types are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. This is required.
     - `value` - A floating point number containing the value of the metric.
 
-
 #### Response
 - The created metrics
 ```json
-[
-  {
-    "id": 41,
-    "sensorId": 1,
-    "metric": {
-      "metricType": "WIND_SPEED",
-      "value": 3.5
+{
+  "result": [
+    {
+      "id": 1,
+      "sensorId": 1,
+      "metric": {
+        "metricType": "WIND_SPEED",
+        "value": 4546
+      },
+      "createdDate": "2023-02-26T15:39:47.356926"
     },
-    "createdDate": "2023-02-23T13:17:46.528805"
-  },
-  {
-    "id": 42,
-    "sensorId": 1,
-    "metric": {
-      "metricType": "TEMPERATURE",
-      "value": 2.45
+    {
+      "id": 2,
+      "sensorId": 1,
+      "metric": {
+        "metricType": "TEMPERATURE",
+        "value": 123235
+      },
+      "createdDate": "2023-02-26T15:39:47.356926"
     },
-    "createdDate": "2023-02-23T13:17:46.528805"
-  }
-]
+    {
+      "id": 3,
+      "sensorId": 1,
+      "metric": {
+        "metricType": "TEMPERATURE",
+        "value": 243
+      },
+      "createdDate": "2023-02-26T15:39:47.356926"
+    }
+  ]
+}
 ```
 
 ### Query Sensor Metrics
@@ -226,7 +237,7 @@ curl --location 'http://localhost:8080/sensor/metric/query' \
           "value": 50
         },
         {
-          "metricType": "HUMIDITY",
+          "metricType": "WIND_SPEED",
           "value": 10  
         }
       ]

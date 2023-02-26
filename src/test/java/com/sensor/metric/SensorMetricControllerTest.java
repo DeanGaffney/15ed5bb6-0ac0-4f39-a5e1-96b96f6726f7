@@ -59,7 +59,7 @@ public class SensorMetricControllerTest {
 
     mockMvc.perform(requestbuilder)
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result", hasSize(1)));
   }
 
   @Test
