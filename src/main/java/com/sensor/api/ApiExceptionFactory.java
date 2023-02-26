@@ -1,7 +1,6 @@
 package com.sensor.api;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
