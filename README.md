@@ -288,3 +288,12 @@ is read or write heavy.
         - Queue to hold messages before persisting to the database. Allows the replaying of data, and eliminates data loss if the primary database becomes unhealthy.
     - Load Balancer used to split traffic to multiple instances of the application
 ![Highly Available & Scalable Architecture](./documentation/architecture/images/highly-available-and-scalable-architecture.png) 
+
+### AWS Serverless Architecture
+- This architecture diagram is based on a purely AWS Serverless solution.
+- Architecture Summary
+    - Deployment components:
+        - All infrastructure stored as code
+        - All data ingestion & querying done via serverless.
+        - Each component secured with IAM roles.
+![AWS Serverless Architecture](./documentation/architecture/images/aws-serverless-architecture.png) 
