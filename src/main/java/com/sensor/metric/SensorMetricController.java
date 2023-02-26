@@ -22,16 +22,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.sensor.api.ApiExceptionFactory;
 import com.sensor.api.response.ApiResponseBody;
 import com.sensor.result.Result;
 
 @RestController
 public class SensorMetricController {
   Logger logger = LoggerFactory.getLogger(SensorMetricController.class);
-
-  // handle invalid enum exceptions
-  private static final Pattern ENUM_MSG = Pattern
-      .compile("from String (.*): not one of the values accepted for Enum class: \\[(.*)\\]");
 
   @Autowired
   private final SensorMetricService sensorMetricService;
@@ -42,17 +39,7 @@ public class SensorMetricController {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<Map<String, Object>> handleJsonErrors(HttpMessageNotReadableException exception) {
-    if (exception.getCause() != null && exception.getCause() instanceof InvalidFormatException) {
-      Matcher match = ENUM_MSG.matcher(exception.getCause().getMessage());
-      if (match.find()) {
-        ApiResponseBody body = ApiResponseBody
-            .createErrorResponse("Invalid value " + match.group(1) + ". Value should be one of: " + match.group(2));
-        return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    ApiResponseBody body = ApiResponseBody.createErrorResponse(exception.getMessage());
-    return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
+    return ApiExceptionFactory.createResponse(exception);
   }
 
   @PostMapping("/sensor/{sensorId}/metric")

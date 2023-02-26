@@ -111,4 +111,80 @@ public class SensorMetricControllerTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.results", hasSize(2)));
   }
 
+  @Test
+  public void shouldErrorForInvalidMetricType() throws Exception {
+    LocalDateTime fromDate = LocalDateTime.of(2023, 2, 23, 20, 50, 0);
+    LocalDateTime endDate = LocalDateTime.of(2023, 2, 23, 22, 50, 0);
+
+    ObjectMapper jsonMapper = new ObjectMapper();
+    ObjectNode jsonNode = jsonMapper.createObjectNode();
+
+    jsonNode.put("fromDate", fromDate.toString());
+    jsonNode.put("endDate", endDate.toString());
+    jsonNode.put("statistic", "AVG");
+
+    ArrayNode metricsJsonArr = jsonMapper.valueToTree(Arrays.asList("INVALID"));
+    jsonNode.putArray("metrics").addAll(metricsJsonArr);
+
+    MockHttpServletRequestBuilder requestbuilder = MockMvcRequestBuilders.post("/sensor/metric/query")
+        .content(jsonNode.toString())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(requestbuilder)
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.error",
+            is("Invalid value \"INVALID\". Value should be one of: WIND_SPEED, HUMIDITY, TEMPERATURE")));
+  }
+
+  @Test
+  public void shouldErrorForInvalidStatistic() throws Exception {
+    LocalDateTime fromDate = LocalDateTime.of(2023, 2, 23, 20, 50, 0);
+    LocalDateTime endDate = LocalDateTime.of(2023, 2, 23, 22, 50, 0);
+
+    ObjectMapper jsonMapper = new ObjectMapper();
+    ObjectNode jsonNode = jsonMapper.createObjectNode();
+
+    jsonNode.put("fromDate", fromDate.toString());
+    jsonNode.put("endDate", endDate.toString());
+    jsonNode.put("statistic", "INVALID");
+
+    ArrayNode metricsJsonArr = jsonMapper.valueToTree(Arrays.asList("TEMPERATURE"));
+    jsonNode.putArray("metrics").addAll(metricsJsonArr);
+
+    MockHttpServletRequestBuilder requestbuilder = MockMvcRequestBuilders.post("/sensor/metric/query")
+        .content(jsonNode.toString())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(requestbuilder)
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.error",
+            is("Invalid value \"INVALID\". Value should be one of: AVG, SUM, MAX, MIN")));
+  }
+
+  @Test
+  public void shouldErrorForInvalidDateFormat() throws Exception {
+    LocalDateTime endDate = LocalDateTime.of(2023, 2, 23, 22, 50, 0);
+
+    ObjectMapper jsonMapper = new ObjectMapper();
+    ObjectNode jsonNode = jsonMapper.createObjectNode();
+
+    jsonNode.put("fromDate", "2023");
+    jsonNode.put("endDate", endDate.toString());
+    jsonNode.put("statistic", "AVG");
+
+    ArrayNode metricsJsonArr = jsonMapper.valueToTree(Arrays.asList("TEMPERATURE"));
+    jsonNode.putArray("metrics").addAll(metricsJsonArr);
+
+    MockHttpServletRequestBuilder requestbuilder = MockMvcRequestBuilders.post("/sensor/metric/query")
+        .content(jsonNode.toString())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(requestbuilder)
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.error",
+            is("Invalid date provided in request. Date should be in the format: yyyy-MM-dd'T'HH:mm:ss. For example 2023-02-26T00:00")));
+  }
 }
