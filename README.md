@@ -9,23 +9,23 @@ Sensor API
 - Database index
 
 ## Completed
-[X] Create sensor metrics via API
-[X] Query Metrics for one or more sensors
-[X] Query Metrics and default to all sensor ids if none are provided
-[X] Query Metrics for a specific statistic
-[X] Query Metrics and default to AVG statistic if one is not provided
-[X] Query Metrics between a date range
-[] Query Metrics without a date range
-    - Time constraints, did not get to come back and complete this.
-[X] Unit & Integration Testing with coverage report
-[X] Documentation on running locally & with docker
+- [X] Create sensor metrics via API
+- [X] Query Metrics for one or more sensors
+- [X] Query Metrics and default to all sensor ids if none are provided
+- [X] Query Metrics for a specific statistic
+- [X] Query Metrics and default to AVG statistic if one is not provided
+- [X] Query Metrics between a date range
+- [] Query Metrics without a date range
+     - Time constraints, did not get to come back and complete this.
+- [X] Unit & Integration Testing with coverage report
+- [X] Documentation on running locally & with docker
 
 ## Extras
-[X] Test coverage reports
-[X] Bash scripts for generating sample data
-[] Better Database Index
-[] Swagger Documentation
-[] Infrastructure Diagrams for different architectures
+- [X] Test coverage reports
+- [X] Bash scripts for generating sample data
+- [] Better Database Index
+- [] Swagger Documentation
+- [] Infrastructure Diagrams for different architectures
 
 ## Improvements
 - Create a dedicated DateRange class for the date range validation
