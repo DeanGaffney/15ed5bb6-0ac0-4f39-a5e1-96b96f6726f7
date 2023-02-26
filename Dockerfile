@@ -1,6 +1,7 @@
 FROM eclipse-temurin:11-jdk-alpine 
 
 ENV APP_HOME=/usr/app
+ENV ARTIFACT_NAME=sensor-0.0.1-SNAPSHOT.jar
 
 WORKDIR $APP_HOME
 
@@ -10,11 +11,9 @@ COPY gradlew ${APP_HOME}
 
 COPY gradle ${APP_HOME}/gradle
 
-RUN ./gradlew build -x test -x integrationTest || return 1
-
 COPY ./src ${APP_HOME}/src
 
-ENV ARTIFACT_NAME=sensor-0.0.1-SNAPSHOT.jar
+RUN ./gradlew build -x test -x integrationTest || return 1
 
 EXPOSE 8080
 
