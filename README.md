@@ -69,7 +69,7 @@ psql -U postgres
 the following:
 - **NOTE** the scripts assumes you can run `curl` on your system.
 ```
-bash ./scripts/generate-data.sh <NUMBER-OF-SENSORS> <NUMBER-OF-REQUEST-PER-SENSOR> 
+bash ./scripts/generate-data.sh <NUMBER-OF-SENSORS> <NUMBER-OF-REQUESTS-PER-SENSOR>
 ```
 - The defaults are `20` for the number of sensors and `100` for the number of requests for each sensor. Each metric request contains 3 metrics per request. So `100` requests will result in `300` metrics being created for a sensor.
 
