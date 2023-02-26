@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.sensor.result.Result;
 import com.sensor.statistic.StatisticType;
@@ -52,6 +53,13 @@ public class SensorMetricQuery {
     return this.metrics.orElse(Arrays.asList(MetricType.values()));
   }
 
+  public List<String> getMetricsTypes() {
+    return this.getMetrics()
+        .stream()
+        .map(m -> m.getType())
+        .collect(Collectors.toList());
+  }
+
   public StatisticType getStatistic() {
     return this.statistic.orElse(StatisticType.AVG);
   }
@@ -71,6 +79,7 @@ public class SensorMetricQuery {
   public Result<SensorMetricQuery> validate() {
     // TODO convert this class to using STRINGS, then convert them to enums once
     // marshalled by jackson, as the stats and metrics can not be validated
+    //
     // correctly with a good error response
     boolean containsValidMetricTypes = this.getMetrics().stream().allMatch(metricType -> {
       return Arrays.asList(MetricType.values()).contains(metricType);

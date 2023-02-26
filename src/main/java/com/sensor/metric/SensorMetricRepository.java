@@ -3,10 +3,13 @@ package com.sensor.metric;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.result.Result;
+import com.sensor.sql.SQLQueryBuilder;
 
 @Repository
 public class SensorMetricRepository {
@@ -28,25 +32,29 @@ public class SensorMetricRepository {
   }
 
   public Result<List<SensorMetricQueryResult>> querySensorMetrics(SensorMetricQuery query) {
-    SensorMetricQueryBuilder builder = new SensorMetricQueryBuilder();
+    SQLQueryBuilder builder = new SQLQueryBuilder();
 
     try {
-      builder.select(Arrays.asList("sensor_id", "metric_type,"))
-          .selectWithStatistic("metric_value", query.getStatistic())
-          .from("sensor_metric")
-          .where();
+      Map<String, Object> queryParameters = new HashMap<String, Object>();
 
-      if (query.containsValidDateRange()) {
-        builder.dateBetween("created_date", query.getFromDate().get(), query.getEndDate().get())
-            .and();
-      }
+      queryParameters.put("fromDate", query.getFromDate().get());
+      queryParameters.put("endDate", query.getEndDate().get());
+      queryParameters.put("metricTypes", query.getMetricsTypes());
+
+      builder.select(Arrays.asList("sensor_id", "metric_type,"))
+          .withAggregation("metric_value", query.getStatistic())
+          .from("sensor_metric")
+          .where()
+          .dateBetween("created_date")
+          .and();
 
       if (query.containsSensorIds()) {
-        builder.whereValueIn("sensor_id", query.getSensorIds())
+        builder.whereValueIn("sensor_id", "sensorIds")
             .and();
+        queryParameters.put("sensorIds", query.getSensorIds());
       }
 
-      builder.metricsMatch("metric_type", query.getMetrics());
+      builder.whereValueIn("metric_type", "metricTypes");
 
       String querytoExecute = builder
           .groupBy(Arrays.asList("sensor_id", "metric_type"))
@@ -54,11 +62,17 @@ public class SensorMetricRepository {
 
       logger.info("Execuring query - " + querytoExecute);
 
+      Query sqlQuery = entityManager.createNativeQuery(querytoExecute);
+
+      queryParameters.keySet()
+          .stream()
+          .forEach(paramKey -> {
+            sqlQuery.setParameter(paramKey, queryParameters.get(paramKey));
+          });
+
       // warning is unavoidable when running a native query and casting to a POJO
       @SuppressWarnings("unchecked")
-      List<Object[]> records = entityManager
-          .createNativeQuery(querytoExecute)
-          .getResultList();
+      List<Object[]> records = sqlQuery.getResultList();
 
       List<SensorMetricQueryResult> result = records.stream()
           .map(record -> {

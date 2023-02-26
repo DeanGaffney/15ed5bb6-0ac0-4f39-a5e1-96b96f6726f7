@@ -18,13 +18,7 @@ Sensor API
 [] Query Metrics without a date range
     - Time constraints, did not get to come back and complete this.
 [X] Unit & Integration Testing with coverage report
-[] Documentation on running locally & with docker
-
-## Improvements
-- Modify query string builder to use prepared statements to prevent SQL injection
-- Create a dedicated DateRange class for the date range validation
-- Create dedicated response or serialization classes for constructing complex responses such as the metric query results.
-- Add better validation for Enum types (needs custom validator)
+[X] Documentation on running locally & with docker
 
 ## Extras
 [X] Test coverage reports
@@ -33,6 +27,11 @@ Sensor API
 [] Swagger Documentation
 [] Infrastructure Diagrams for different architectures
 
+## Improvements
+- Create a dedicated DateRange class for the date range validation
+- Create dedicated response or serialization classes for constructing complex responses such as the metric query results.
+- Add better validation for Enum types (needs custom validator)
+- Database Migration Scripts (Flyway)
 
 ## Running Locally
 - Your system must have java 11 installed.
@@ -50,7 +49,7 @@ Sensor API
 docker build -t sensor-api .
 ```
 
-- To run run the application in a docker container with a postgres container run the following:
+- To run the application in a docker container with a postgres container run the following:
 ```bash
 docker-compose up --remove-orphans
 ```
@@ -86,7 +85,6 @@ Why use postgres?
 - Can be used for both relational and JSON formatted data, allowing for more flexibility as application requirements change.
 - Powerful query optimizer makes it a good choice for working with large data.
 - Application requirements required complex queries, some NoSQL solutions such as AWS DynamoDB can make querying data difficult once the initial table schema has been created.
-
 
 ## Running Tests & Coverage Report
 - To run unit tests run
@@ -218,3 +216,8 @@ RESPONSE
   ]
 }
 ```
+
+## Architecture Diagrams
+### POC Diagram
+- This architecture diagram is based on the architecture which was deliver as part of the POC. 
+![POC Diagram](./documentation/architecture/images/poc-diagram.png) 

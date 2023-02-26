@@ -1,4 +1,4 @@
-package com.sensor.metric;
+package com.sensor.sql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,9 +9,11 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import com.sensor.metric.MetricType;
+import com.sensor.metric.SensorMetricQuery;
 import com.sensor.statistic.StatisticType;
 
-public class SensorMetricQueryBuilderTest {
+public class SQLQueryBuilderTest {
 
   @Test
   public void shouldBuildQuery() {
@@ -31,26 +33,25 @@ public class SensorMetricQueryBuilderTest {
     SensorMetricQuery query = new SensorMetricQuery(metricTypes, sensorIds, statistics, optionalFromDate,
         optionalEndDate);
 
-    SensorMetricQueryBuilder builder = new SensorMetricQueryBuilder();
+    SQLQueryBuilder builder = new SQLQueryBuilder();
 
     String dbQuery = builder.select(Arrays.asList("sensor_id", "metric_type,"))
-        .selectWithStatistic("metric_type", query.getStatistic())
+        .withAggregation("metric_type", query.getStatistic())
         .from("sensor_metric")
         .where()
-        .dateBetween("created_date", fromDate, endDate)
+        .dateBetween("created_date")
         .and()
-        .whereValueIn("sensor_id", sensorIds.get())
+        .whereValueIn("sensor_id", "sensorIds")
         .and()
-        .metricsMatch("metric_type", query.getMetrics())
+        .whereValueIn("metric_type", "metricTypes")
         .groupBy(Arrays.asList("sensor_id", "metric_type"))
         .build();
 
     assertEquals("SELECT sensor_id, metric_type, AVG(metric_type) as statistic_value " +
         "FROM sensor_metric " +
-        "WHERE created_date BETWEEN " + "'" + 
-        fromDate.toString() + "' AND '" + endDate.toString() + "'" +
-        " AND sensor_id IN (1, 2) AND " +
-        "metric_type IN ('temperature', 'humidity') " +
+        "WHERE created_date BETWEEN :fromDate AND :endDate" +
+        " AND sensor_id IN :sensorIds AND " +
+        "metric_type IN :metricTypes " +
         "GROUP BY sensor_id, metric_type", dbQuery);
   }
 }
