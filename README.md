@@ -1,13 +1,6 @@
 # 15ed5bb6-0ac0-4f39-a5e1-96b96f6726f7
 Sensor API
 
-# TODO
-- Document/Diagrams for redis cache, read replicas(read heavy application) & message broker for write heavy application
-- Refactor all TODOs
-- Add redis cache (infra diagram)
-- Add a Message Broker (infra diagram)
-- Database index
-
 ## Completed
 - [X] Create sensor metrics via API
 - [X] Query Metrics for one or more sensors
@@ -21,17 +14,20 @@ Sensor API
 - [X] Documentation on running locally & with docker
 
 ## Extras
+- [X] Containerized the application and database with Docker.
 - [X] Test coverage reports
 - [X] Bash scripts for generating sample data
+- [X] Infrastructure Diagrams for different architectures
 - [] Better Database Index
 - [] Swagger Documentation
-- [] Infrastructure Diagrams for different architectures
 
 ## Improvements
 - Create a dedicated DateRange class for the date range validation
 - Create dedicated response or serialization classes for constructing complex responses such as the metric query results.
 - Add better validation for Enum types (needs custom validator)
 - Database Migration Scripts (Flyway)
+- Refactor all TODOs
+- Database index for querying needs more work, ran out of time to dig deep into this.
 
 ## Running Locally
 - Your system must have java 11 installed.
@@ -110,29 +106,38 @@ Integration Tests - `build/reports/tests/test/index.html`
 `build/jacocoHtml/index.html`
 
 ## API
+### Create Sensor Metrics
+- An API that accepts a batch of metrics to create for the sensor id provided in the 
+path of the URL
+- URL `http://localhost:8080/sensor/{sensorId}/metric`
 
-POST /sensor/{sensorId}/metric
-Creates a batch of sensor metrics against the given sensor id
-REQUEST
-```json
-[
-  {
-    "metricType": "TEMPERATURE",
-    "value": 6.5
-  },
-  {
-    "metricType": "HUMIDITY",
-    "value": 6.5
-  },
-  {
-    "metricType": "WIND_SPEED",
-    "value": 6.5
-  }
-]
+#### Request
+- Sample curl request
+```bash
+curl --location 'http://localhost:8080/sensor/1/metric' \
+--header 'Content-Type: application/json' \
+--data '[
+    {
+        "metricType": "WIND_SPEED",
+        "value": 4546
+    },
+    {
+        "metricType": "TEMPERATURE",
+        "value": 123235
+    },
+    {
+        "metricType": "TEMPERATURE",
+        "value": 243
+    }
+]'
 ```
+- Request Body Attributes
+    `metricType` - A metric type. Valid metric types are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. This is required.
+    `value` - A floating point number containing the value of the metric.
 
-RESPONSE
-200 status code
+
+#### Response
+- The created metrics
 ```json
 [
   {
@@ -156,20 +161,33 @@ RESPONSE
 ]
 ```
 
-POST /sensor/metric/query
-REQUEST
-```json
-{
-    "sensorIds": [1, 4, 7], // if not provided, all will be retrieved
-    "metrics": ["TEMPERATURE", "HUMIDITY"],// if not provided all metric types will be retrieved
-    "statistics": "SUM" // if not provided, defaults to AVG
-    "fromDate": "2023-02-22T00:00:00", // both fromDate and endDate must be provided
+### Query Sensor Metrics
+- An API that accepts a query object to query sensor metrics
+- URL `http://localhost:8080/sensor/metric/query`
+
+#### Request
+- Sample curl request
+```bash
+curl --location 'http://localhost:8080/sensor/metric/query' \
+--header 'Content-Type: application/json' \
+--data '{
+    "sensorIds": [1],
+    "metrics": ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"],
+    "statistic": "SUM",
+    "fromDate": "2023-02-22T00:00:00",
     "endDate": "2023-03-20T23:59:59"
 }
+'
 ```
+- Request Body Attributes
+    `sensorIds` - A list of sensor ids to include in the query results. If not provided all sensor ids will be included.
+    `metrics` - A list of metrics to query for. Valid metrics are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. If this attribute is not provided, all metrics will be searched.
+    `statistic` - The statistic to use for aggregating the data. Possible values are "SUM", "AVG", "MIN" or "MAX". If this attribute is not provided, AVG will be used.
+    `fromDate` - The date to start searching from. Must be in the format "2023-02-22T00:00:00". This is required.
+    `endDate` - The date to end the search from. Must be in the format "2023-02-22T00:00:00". This is required.
 
-RESPONSE
-200 status code
+#### Response
+- Returns a response with sensor metrics grouped by sensor id.
 ```json
 {
   "statistic": "SUM",
