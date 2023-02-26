@@ -247,7 +247,7 @@ is read or write heavy.
         - Multiple read replicas
     - Redis Cache to reduce the number of reads on read replicas the database.
     - Queue to hold messages before persisting to the database. Allows the replaying of data, and eliminates data loss if the primary database becomes unhealthy.
-![Read Heavy Architecture](./documentation/architecture/images/write-heavy-architecture.png) 
+![Write Heavy Architecture](./documentation/architecture/images/write-heavy-architecture.png) 
 
 ### Read & Write Heavy Diagram
 - This architecture diagram is based on a highly available & scalable architecture
