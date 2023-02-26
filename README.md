@@ -131,9 +131,9 @@ curl --location 'http://localhost:8080/sensor/1/metric' \
     }
 ]'
 ```
-- Request Body Attributes
-    `metricType` - A metric type. Valid metric types are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. This is required.
-    `value` - A floating point number containing the value of the metric.
+- Request Body Attributes:
+    - `metricType` - A metric type. Valid metric types are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. This is required.
+    - `value` - A floating point number containing the value of the metric.
 
 
 #### Response
@@ -180,11 +180,11 @@ curl --location 'http://localhost:8080/sensor/metric/query' \
 '
 ```
 - Request Body Attributes
-    `sensorIds` - A list of sensor ids to include in the query results. If not provided all sensor ids will be included.
-    `metrics` - A list of metrics to query for. Valid metrics are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. If this attribute is not provided, all metrics will be searched.
-    `statistic` - The statistic to use for aggregating the data. Possible values are "SUM", "AVG", "MIN" or "MAX". If this attribute is not provided, AVG will be used.
-    `fromDate` - The date to start searching from. Must be in the format "2023-02-22T00:00:00". This is required.
-    `endDate` - The date to end the search from. Must be in the format "2023-02-22T00:00:00". This is required.
+    - `sensorIds` - A list of sensor ids to include in the query results. If not provided all sensor ids will be included.
+    - `metrics` - A list of metrics to query for. Valid metrics are ["TEMPERATURE", "HUMIDITY", "WIND_SPEED"]. If this attribute is not provided, all metrics will be searched.
+    - `statistic` - The statistic to use for aggregating the data. Possible values are "SUM", "AVG", "MIN" or "MAX". If this attribute is not provided, AVG will be used.
+    - `fromDate` - The date to start searching from. Must be in the format "2023-02-22T00:00:00". This is required.
+    - `endDate` - The date to end the search from. Must be in the format "2023-02-22T00:00:00". This is required.
 
 #### Response
 - Returns a response with sensor metrics grouped by sensor id.
