@@ -5,6 +5,11 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * POJO used to convert raw SQL records from a {@link SensorMetricQuery}
+ * to a java object.
+ *
+ */
 public class SensorMetricQueryResult {
 
   private Long sensorId;

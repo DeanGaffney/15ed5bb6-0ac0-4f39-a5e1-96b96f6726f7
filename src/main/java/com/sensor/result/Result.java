@@ -1,6 +1,11 @@
 package com.sensor.result;
 
 
+/**
+ * A class that represents a generic "Result".
+ * The class is mainly used to control flow without the use of Exceptions.
+ *
+ */
 public class Result<T> {
   private T result;
   private Exception error;

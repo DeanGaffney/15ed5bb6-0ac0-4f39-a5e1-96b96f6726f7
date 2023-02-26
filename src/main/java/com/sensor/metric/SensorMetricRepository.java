@@ -31,6 +31,12 @@ public class SensorMetricRepository {
     this.entityManager = entityManager;
   }
 
+  /**
+   * Queries sensor metric data using the given {@link SensorMetricQuery}
+   *
+   * @param query the {@link SensorMetricQuery}
+   * @return a list of {@link SensorMetricQueryResult}
+   */
   public Result<List<SensorMetricQueryResult>> querySensorMetrics(SensorMetricQuery query) {
     SQLQueryBuilder builder = new SQLQueryBuilder();
 

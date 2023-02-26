@@ -23,6 +23,8 @@ public class ApiExceptionFactory {
 
   public static ResponseEntity<Map<String, Object>> createResponse(HttpMessageNotReadableException exception) {
     if (exception.getCause() != null && exception.getCause() instanceof InvalidFormatException) {
+      // handles an error case where jackson can not convert a string of an invalid
+      // enum to the expected enum
       Matcher enumMatch = ENUM_MSG.matcher(exception.getCause().getMessage());
       if (enumMatch.find()) {
         ApiResponseBody body = ApiResponseBody
@@ -31,13 +33,15 @@ public class ApiExceptionFactory {
         return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
       }
 
+      // handles the case where jackson fails to convert a date string to a
+      // LocalDateTime object
       Matcher dateMatch = DATE_MSG.matcher(exception.getCause().getMessage());
       if (dateMatch.find()) {
         ApiResponseBody body = ApiResponseBody
             .createErrorResponse(
                 "Invalid date provided in request. "
                     + "Date should be in the format: yyyy-MM-dd'T'HH:mm:ss. For example "
-                    + LocalDateTime.of(2023,2,26,0,0).toString());
+                    + LocalDateTime.of(2023, 2, 26, 0, 0).toString());
         return new ResponseEntity<Map<String, Object>>(body.getBody(), HttpStatus.BAD_REQUEST);
       }
     }

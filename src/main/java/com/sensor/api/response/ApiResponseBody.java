@@ -3,6 +3,12 @@ package com.sensor.api.response;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class representing an API response body
+ * Allows custom responses to be returned by using
+ * the result of the "getBody" call with a ResponseEntity
+ *
+ */
 public class ApiResponseBody {
   private Map<String, Object> body;
 
