@@ -10,11 +10,9 @@ COPY gradlew ${APP_HOME}
 
 COPY gradle ${APP_HOME}/gradle
 
-RUN ./gradlew build -x test -x integrationTest || return 0 
+RUN ./gradlew build -x test -x integrationTest || return 1
 
 COPY ./src ${APP_HOME}/src
-
-RUN ./gradlew build -x test -x integrationTest && ls ${APP_HOME}/build/libs
 
 ENV ARTIFACT_NAME=sensor-0.0.1-SNAPSHOT.jar
 
