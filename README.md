@@ -220,4 +220,4 @@ RESPONSE
 ## Architecture Diagrams
 ### POC Diagram
 - This architecture diagram is based on the architecture which was deliver as part of the POC. 
-![POC Diagram](./documentation/architecture/images/poc-diagram.png) 
+![POC Diagram](./documentation/architecture/images/poc-architecture.png) 
