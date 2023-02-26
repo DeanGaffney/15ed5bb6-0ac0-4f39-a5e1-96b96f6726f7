@@ -219,5 +219,23 @@ RESPONSE
 
 ## Architecture Diagrams
 ### POC Diagram
-- This architecture diagram is based on the architecture which was deliver as part of the POC. 
+- This architecture diagram is based on the architecture which was deliver as part of the POC.
+- Architecture Summary
+    - Single Spring Boot with Java 11
+    - Single Postgres Database
 ![POC Diagram](./documentation/architecture/images/poc-architecture.png) 
+
+- The next section includes architecture diagrams which can tackle some problems that may arise if the application
+is read or write heavy.
+
+### Read Heavy Diagram
+- This architecture diagram is based on the idea of the daatbase doing more reads than writes
+- Architecture Summary
+    - Single Spring Boot with Java 11
+        - Single server should be fine as database read replicas, and redis cache should do a lot of the heavy lifting.
+        - Server is only responsible for serializing queries and deserializing query results.
+    - Multiple Postgres Database
+        - One main write database server
+        - Multiple read replicas
+    - Redis Cache to reduce the number of reads on read replicas.
+![Read Heavy Architecture](./documentation/architecture/images/read-heavy-architecture.png) 
